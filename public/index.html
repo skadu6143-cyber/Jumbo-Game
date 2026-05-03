@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jumbo Word Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="noise"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- START SCREEN -->
+  <div id="screen-start" class="screen active">
+    <div class="start-inner">
+      <div class="logo-wrap">
+        <div class="logo-badge">WORD PUZZLE</div>
+        <h1 class="logo-title">JUMBO</h1>
+        <p class="logo-tagline">Unscramble &middot; Discover &middot; Conquer</p>
+      </div>
+      <div class="rules-grid">
+        <div class="rule-card"><span class="rule-icon">&#8635;</span><span class="rule-text">Scrambled 5+ letter word</span></div>
+        <div class="rule-card"><span class="rule-icon">&#9674;</span><span class="rule-text">Find 4 valid words to clear</span></div>
+        <div class="rule-card"><span class="rule-icon">&#9711;</span><span class="rule-text">2 minute time limit</span></div>
+        <div class="rule-card"><span class="rule-icon">&#11042;</span><span class="rule-text">Min 3 letters per word</span></div>
+        <div class="rule-card"><span class="rule-icon">&#9733;</span><span class="rule-text">Power Tiles give bonus points</span></div>
+        <div class="rule-card"><span class="rule-icon">&#9670;</span><span class="rule-text">274k+ Oxford dictionary words</span></div>
+      </div>
+      <button id="btn-start" class="btn-primary-cta">
+        <span>START GAME</span>
+        <span class="cta-arrow">&#8594;</span>
+      </button>
+      <div id="start-error" class="toast-error hidden"></div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="screen hidden">
+    <div class="game-layout">
+
+      <header class="topbar">
+        <div class="topbar-brand">JUMBO</div>
+        <div class="topbar-stats">
+          <div class="stat-pill">
+            <span class="stat-label">SCORE</span>
+            <span id="hud-score" class="stat-value">0</span>
+          </div>
+          <div class="stat-pill stat-timer">
+            <span class="stat-label">TIME</span>
+            <span id="hud-timer" class="stat-value">2:00</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-label">HINTS</span>
+            <span id="hud-hints" class="stat-value">3</span>
+          </div>
+        </div>
+        <button id="btn-end" class="btn-end-sm">END</button>
+      </header>
+
+      <div class="power-legend">
+        <div class="power-legend-item">
+          <span class="legend-tile legend-gold">A</span>
+          <span class="legend-text">Gold = +3 bonus</span>
+        </div>
+        <div class="power-legend-item">
+          <span class="legend-tile legend-red">B</span>
+          <span class="legend-text">Red = +5 bonus</span>
+        </div>
+        <div class="power-legend-item" id="power-status">
+          <span class="power-status-dot"></span>
+          <span id="power-status-text">Power tiles active!</span>
+        </div>
+      </div>
+
+      <section class="letters-section">
+        <p class="eyebrow">SCRAMBLED LETTERS</p>
+        <div id="letters-display" class="letters-row"></div>
+      </section>
+
+      <section class="progress-section">
+        <div class="progress-meta">
+          <span class="progress-label">Words found</span>
+          <span class="progress-count">
+            <span id="found-count">0</span><span class="slash">/</span><span id="target-count">4</span>
+          </span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </section>
+
+      <section class="input-section">
+        <div class="input-wrap">
+          <input id="word-input" type="text" placeholder="TYPE YOUR WORD"
+            autocomplete="off" autocorrect="off" spellcheck="false" />
+          <button id="btn-submit" class="btn-submit">SUBMIT</button>
+        </div>
+        <div id="feedback" class="feedback-bar hidden"></div>
+      </section>
+
+      <div id="bonus-popup" class="bonus-popup hidden"></div>
+
+      <div id="hint-box" class="hint-box hidden">
+        <span class="hint-label">HINT</span>
+        <span id="hint-word" class="hint-word"></span>
+      </div>
+
+      <div class="action-bar">
+        <button id="btn-hint" class="btn-hint-action">
+          <span class="hint-dot"></span>
+          <span id="hint-btn-text">USE HINT &mdash; 3 LEFT</span>
+        </button>
+      </div>
+
+      <section class="found-section">
+        <p class="eyebrow">FOUND WORDS</p>
+        <div id="found-words-list" class="chips-row">
+          <span class="chips-empty">None yet</span>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="screen-result" class="screen hidden">
+    <div class="result-inner">
+      <div class="result-top">
+        <div id="result-badge" class="result-badge">ROUND OVER</div>
+        <div id="result-score-big" class="result-big-score">0</div>
+        <p class="result-score-sub">FINAL SCORE</p>
+      </div>
+      <div class="result-stats">
+        <div class="result-stat-box">
+          <span class="result-stat-val" id="result-base-word">—</span>
+          <span class="result-stat-key">BASE WORD</span>
+        </div>
+        <div class="result-stat-box">
+          <span class="result-stat-val" id="result-found">0</span>
+          <span class="result-stat-key">FOUND</span>
+        </div>
+        <div class="result-stat-box">
+          <span class="result-stat-val" id="result-bonus">0</span>
+          <span class="result-stat-key">BONUS PTS</span>
+        </div>
+      </div>
+      <div class="result-words-wrap">
+        <p class="eyebrow">CORRECT WORDS</p>
+        <div id="result-words-list" class="chips-row chips-center"></div>
+      </div>
+      <button id="btn-play-again" class="btn-primary-cta">
+        <span>PLAY AGAIN</span>
+        <span class="cta-arrow">&#8594;</span>
+      </button>
+    </div>
+  </div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ══ FLOATING MUSIC PLAYER ══ -->
+  <div id="music-player" class="music-player">
+    <div class="music-player-inner">
+
+      <!-- Vinyl disc -->
+      <div id="vinyl" class="vinyl">
+        <div class="vinyl-groove vinyl-groove-1"></div>
+        <div class="vinyl-groove vinyl-groove-2"></div>
+        <div class="vinyl-groove vinyl-groove-3"></div>
+        <div class="vinyl-center"></div>
+      </div>
+
+      <!-- Info + controls -->
+      <div class="music-info">
+        <div class="music-track-name" id="music-track-name">Lo-fi Chill</div>
+        <div class="music-artist">Jumbo Radio</div>
+        <!-- Waveform visualiser bars -->
+        <div class="music-bars" id="music-bars">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          <span class="bar"></span><span class="bar"></span>
+        </div>
+      </div>
+
+      <div class="music-controls">
+        <button id="btn-prev" class="mc-btn" title="Previous">&#9664;&#9664;</button>
+        <button id="btn-play" class="mc-btn mc-btn-play" title="Play/Pause">&#9654;</button>
+        <button id="btn-next" class="mc-btn" title="Next">&#9654;&#9654;</button>
+      </div>
+
+      <!-- Volume -->
+      <div class="music-vol">
+        <span class="vol-icon">&#9834;</span>
+        <input id="vol-slider" type="range" min="0" max="100" value="40" class="vol-range" />
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
