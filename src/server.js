@@ -11,6 +11,7 @@ const HOST = process.env.HOST || '0.0.0.0';
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb+srv://skadu6143_db_user:TYOsU8lNP3zoc23F@cluster0.jzsgws6.mongodb.net/jumbo_word_game?retryWrites=true&w=majority';
 
 
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
